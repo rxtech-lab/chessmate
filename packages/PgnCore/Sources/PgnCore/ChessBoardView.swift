@@ -55,6 +55,8 @@ public struct ChessBoardView: View {
                             isLight: (file + rank) % 2 == 0,
                             config: config,
                             isSelected: selectedSquare == square,
+                            isSourceHighlighted: gameState.highlightedFromSquare == square,
+                            isDestinationHighlighted: gameState.highlightedToSquare == square,
                             onTap: {
                                 selectedSquare = square
                                 onSquareTap(square)
@@ -78,18 +80,36 @@ private struct SquareView: View {
     let isLight: Bool
     let config: ChessBoardConfig
     let isSelected: Bool
+    let isSourceHighlighted: Bool
+    let isDestinationHighlighted: Bool
     let onTap: () -> Void
     let pieceImage: Image?
 
     var body: some View {
         ZStack {
+            // Base square color
             Rectangle()
                 .fill(isLight ? config.lightSquareColor : config.darkSquareColor)
-                .overlay(
-                    Rectangle()
-                        .stroke(Color.blue, lineWidth: isSelected ? 2 : 0)
-                )
 
+            // Move highlight for source square
+            if isSourceHighlighted {
+                Rectangle()
+                    .fill(config.sourceHighlightColor)
+            }
+
+            // Move highlight for destination square
+            if isDestinationHighlighted {
+                Rectangle()
+                    .fill(config.destinationHighlightColor)
+            }
+
+            // Selection highlight
+            if isSelected {
+                Rectangle()
+                    .stroke(Color.blue, lineWidth: 2)
+            }
+
+            // Piece image
             if let pieceImage = pieceImage {
                 pieceImage
                     .resizable()
@@ -97,6 +117,7 @@ private struct SquareView: View {
                     .padding(config.squareSize * 0.1)
             }
 
+            // Square label (for debugging)
             Text(square)
                 .font(.system(size: 10))
                 .foregroundColor(isLight ? config.darkSquareColor : config.lightSquareColor)

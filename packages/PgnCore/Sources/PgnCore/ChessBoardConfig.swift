@@ -60,17 +60,27 @@ public struct ChessBoardConfig {
     /// The size of each square in points
     public let squareSize: CGFloat
 
+    /// The color for highlighting the source square of a move
+    public let sourceHighlightColor: Color
+
+    /// The color for highlighting the destination square of a move
+    public let destinationHighlightColor: Color
+
     public init(
         whitePieces: WhitePieces,
         blackPieces: BlackPieces,
         lightSquareColor: Color = Color(red: 0.9, green: 0.9, blue: 0.8),
         darkSquareColor: Color = Color(red: 0.6, green: 0.6, blue: 0.5),
-        squareSize: CGFloat = 60
+        squareSize: CGFloat = 60,
+        sourceHighlightColor: Color = Color.yellow.opacity(0.5),
+        destinationHighlightColor: Color = Color.green.opacity(0.5)
     ) {
         self.whitePieces = whitePieces
         self.blackPieces = blackPieces
         self.lightSquareColor = lightSquareColor
         self.darkSquareColor = darkSquareColor
         self.squareSize = squareSize
+        self.sourceHighlightColor = sourceHighlightColor
+        self.destinationHighlightColor = destinationHighlightColor
     }
 }

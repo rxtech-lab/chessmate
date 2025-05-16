@@ -73,7 +73,10 @@ public struct GameState {
     var historyData: [MoveData] = []
 
     /// Current position in the move list (0-based index)
-    public internal(set) var currentMoveIndex: Int = 0
+    /// This is a Double to allow half-moves:
+    /// - Integer values (0.0, 1.0, 2.0, etc.) represent positions after black's move
+    /// - Half values (0.5, 1.5, 2.5, etc.) represent positions after white's move
+    public internal(set) var currentMoveIndex: Double = 0
 
     /// The white player
     var whitePlayer: Player?
@@ -90,12 +93,25 @@ public struct GameState {
     /// The current board position
     var board: [String: Piece] = [:]
 
+    /// The source square of the last move (for highlighting)
+    public internal(set) var highlightedFromSquare: String? = nil
+
+    /// The destination square of the last move (for highlighting)
+    public internal(set) var highlightedToSquare: String? = nil
+
     public var hasPreviousMove: Bool {
         return currentMoveIndex > 0
     }
 
     public var hasNextMove: Bool {
-        return currentMoveIndex < historyData.count - 1
+        if currentMoveIndex.truncatingRemainder(dividingBy: 1) == 0 {
+            // After black's move, check if there's another full move
+            return Int(currentMoveIndex) < historyData.count - 1
+        } else {
+            // After white's move, check if black has a move in this same move number
+            let moveIdx = Int(currentMoveIndex - 0.5)
+            return moveIdx < historyData.count && historyData[moveIdx].blackMove != nil
+        }
     }
 
     /// Gets the piece at a given square
@@ -113,8 +129,9 @@ public struct GameState {
     }
 
     public init(
-        metadata: GameMetadata? = nil, historyData: [MoveData], currentMoveIndex: Int,
-        whitePlayer: Player? = nil, blackPlayer: Player? = nil, pgnContent: String, isLoaded: Bool
+        metadata: GameMetadata? = nil, historyData: [MoveData], currentMoveIndex: Double,
+        whitePlayer: Player? = nil, blackPlayer: Player? = nil, pgnContent: String, isLoaded: Bool,
+        highlightedFromSquare: String? = nil, highlightedToSquare: String? = nil
     ) {
         self.metadata = metadata
         self.historyData = historyData
@@ -123,16 +140,20 @@ public struct GameState {
         self.blackPlayer = blackPlayer
         self.pgnContent = pgnContent
         self.isLoaded = isLoaded
+        self.highlightedFromSquare = highlightedFromSquare
+        self.highlightedToSquare = highlightedToSquare
     }
 
     public init() {
         self.metadata = nil
         self.historyData = []
-        self.currentMoveIndex = -1
+        self.currentMoveIndex = 0
         self.whitePlayer = nil
         self.blackPlayer = nil
         self.pgnContent = ""
         self.isLoaded = false
+        self.highlightedFromSquare = nil
+        self.highlightedToSquare = nil
     }
 }
 
@@ -159,6 +180,10 @@ public class PgnCore: PgnCoreProtocol {
     private func setupInitialBoard() {
         // Clear the board
         gameState.board = [:]
+
+        // Clear highlights
+        gameState.highlightedFromSquare = nil
+        gameState.highlightedToSquare = nil
 
         // Set up pawns
         for file in ["a", "b", "c", "d", "e", "f", "g", "h"] {
@@ -206,13 +231,15 @@ public class PgnCore: PgnCoreProtocol {
         gameState = GameState(
             metadata: game.metadata,
             historyData: game.moves,
-            currentMoveIndex: 0,
+            currentMoveIndex: 0.0,
             whitePlayer: game.metadata.white != nil
                 ? Player(id: UUID().uuidString, name: game.metadata.white!, color: .white) : nil,
             blackPlayer: game.metadata.black != nil
                 ? Player(id: UUID().uuidString, name: game.metadata.black!, color: .black) : nil,
             pgnContent: game.rawContent,
-            isLoaded: true
+            isLoaded: true,
+            highlightedFromSquare: nil,
+            highlightedToSquare: nil
         )
 
         // Reset the board to initial position
@@ -231,72 +258,111 @@ public class PgnCore: PgnCoreProtocol {
 
     /// Moves to the next position in the game
     public func next() {
-        guard gameState.currentMoveIndex < gameState.historyData.count - 1 else { return }
+        // Check if we can go to next half-move
+        if !gameState.hasNextMove { return }
 
-        // Get the next move
-        gameState.currentMoveIndex += 1
-        let move = gameState.historyData[gameState.currentMoveIndex - 1]
+        // Determine the current state and what to do next
+        let isWholeNumber = gameState.currentMoveIndex.truncatingRemainder(dividingBy: 1) == 0
 
-        // Apply the move
-        applyMove(move)
-    }
-
-    /// Moves to the previous position in the game
-    public func previous() {
-        // reset the board
-        setupInitialBoard()
-        guard gameState.currentMoveIndex > 0 else { return }
-        gameState.currentMoveIndex -= 1
-        // apply the previous move
-        for i in 0..<gameState.currentMoveIndex {
-            applyMove(gameState.historyData[i])
+        if isWholeNumber {
+            // We're after black's move, so move to white's move in the next turn
+            gameState.currentMoveIndex += 0.5
+            let moveIndex = Int(gameState.currentMoveIndex - 0.5)
+            let move = gameState.historyData[moveIndex]
+            applyWhiteMove(move)
+            // The movePiece call in applyWhiteMove will set the highlights
+        } else {
+            // We're after white's move, so move to black's move in the same turn
+            gameState.currentMoveIndex += 0.5
+            let moveIndex = Int(gameState.currentMoveIndex - 1)
+            let move = gameState.historyData[moveIndex]
+            applyBlackMove(move)
+            // The movePiece call in applyBlackMove will set the highlights
         }
     }
 
     /// Moves to the first position in the game
     public func first() {
-        // If already at first move or before, do nothing
         if gameState.currentMoveIndex <= 0 {
             gameState.currentMoveIndex = 0
+            // Clear highlights
+            gameState.highlightedFromSquare = nil
+            gameState.highlightedToSquare = nil
             return
         }
 
-        // Reset board to initial position
         setupInitialBoard()
         gameState.currentMoveIndex = 0
-
-        // Apply the first move if it exists
-        if !gameState.historyData.isEmpty {
-            let move = gameState.historyData[0]
-            applyMove(move)
-        }
     }
 
     /// Moves to the last position in the game
     public func last() {
-        // If already at last move, do nothing
-        if gameState.currentMoveIndex == gameState.historyData.count - 1 {
-            return
-        }
+        if gameState.historyData.isEmpty { return }
 
-        // If we're near the end, just use next() to get there efficiently
-        if gameState.historyData.count - gameState.currentMoveIndex < 5 {
-            while gameState.currentMoveIndex < gameState.historyData.count - 1 {
-                next()
-            }
-            return
-        }
-
-        // Otherwise, reset and replay all moves (for distant jumps)
+        // Reset and replay all moves
         setupInitialBoard()
 
-        // Apply all moves
-        for i in 0..<gameState.historyData.count {
-            let move = gameState.historyData[i]
-            applyMove(move)
+        // Check if the last move has both white and black moves
+        let lastMoveIdx = gameState.historyData.count - 1
+        let lastMove = gameState.historyData[lastMoveIdx]
+
+        // Play all full moves
+        for i in 0..<lastMoveIdx {
+            applyMove(gameState.historyData[i])
         }
 
-        gameState.currentMoveIndex = gameState.historyData.count - 1
+        // Apply the last move
+        if lastMove.blackMove != nil {
+            // Last move is complete with both white and black moves
+            applyMove(lastMove)
+            gameState.currentMoveIndex = Double(lastMoveIdx + 1)
+        } else {
+            // Last move only has white's move
+            applyWhiteMove(lastMove)
+            gameState.currentMoveIndex = Double(lastMoveIdx) + 0.5
+        }
+
+        // The movePiece call in applyMove will set the highlights
+    }
+
+    /// Moves to the previous position in the game
+    public func previous() {
+        // If at initial position, do nothing
+        if gameState.currentMoveIndex <= 0 { return }
+
+        // Reset the board and replay moves up to the previous position
+        setupInitialBoard()
+
+        // Determine if we're going from white's move to start, or black's move to white's move
+        let isWholeNumber = gameState.currentMoveIndex.truncatingRemainder(dividingBy: 1) == 0
+
+        if isWholeNumber {
+            // Going from after black's move to after white's move
+            gameState.currentMoveIndex -= 0.5
+
+            // Replay all moves up to the new position
+            let fullMoves = Int(gameState.currentMoveIndex - 0.5)
+            for i in 0..<fullMoves {
+                applyMove(gameState.historyData[i])
+            }
+
+            // Add the white move for the current position
+            if gameState.currentMoveIndex > 0 {
+                let moveIdx = Int(gameState.currentMoveIndex - 0.5)
+                applyWhiteMove(gameState.historyData[moveIdx])
+            }
+        } else {
+            // Going from after white's move to after black's move of previous turn
+            gameState.currentMoveIndex -= 0.5
+
+            // Replay all full moves up to the previous position
+            let fullMoves = Int(gameState.currentMoveIndex)
+            for i in 0..<fullMoves {
+                applyMove(gameState.historyData[i])
+            }
+        }
+
+        // The highlights will be set by the last movePiece call in the replay
     }
 
     /// Saves the current game state to a PGN file
@@ -341,10 +407,17 @@ public class PgnCore: PgnCoreProtocol {
             return []
         }
 
-        let startIndex = max(0, gameState.currentMoveIndex - moves + 1)
-        let endIndex = gameState.currentMoveIndex + 1
+        let currentIndex = Int(gameState.currentMoveIndex)
+        let startIndex = max(0, currentIndex - moves + 1)
+        let endIndex = currentIndex + 1
 
-        return Array(gameState.historyData[startIndex..<endIndex])
+        // If we have a fractional moveIndex (white's move), we need to include the partial move
+        if gameState.currentMoveIndex.truncatingRemainder(dividingBy: 1) != 0 {
+            return Array(
+                gameState.historyData[startIndex..<min(endIndex, gameState.historyData.count)])
+        } else {
+            return Array(gameState.historyData[startIndex..<endIndex])
+        }
     }
 
     // MARK: - Private Methods
@@ -405,7 +478,7 @@ public class PgnCore: PgnCoreProtocol {
                     // If this was a match that ended with a new tag, we need to find the actual start of the next game
                     if gameEndIndex < nsContent.length
                         && nsContent.substring(with: NSRange(location: gameEndIndex - 1, length: 1))
-                        == "["
+                            == "["
                     {
                         lastEndIndex = gameEndRange.location + gameEndRange.length - 1
                     } else {
@@ -550,7 +623,7 @@ public class PgnCore: PgnCoreProtocol {
                     if let whiteMove = currentWhiteMove {
                         let moveText =
                             "\(currentMoveNumber). \(whiteMove)"
-                                + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
+                            + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
 
                         let move = MoveData(
                             moveNumber: currentMoveNumber,

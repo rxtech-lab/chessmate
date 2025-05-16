@@ -46,6 +46,7 @@ final class PgnCoreParsingTests: XCTestCase {
         XCTAssertNil(pgnCore.gameState.piece(at: "e2"), "White pawn should have moved from e2")
         XCTAssertNotNil(pgnCore.gameState.piece(at: "e4"), "White pawn should be at e4")
 
+        pgnCore.next()
         // 1. c7 -> c5 (Black)
         XCTAssertEqual(pgnCore.gameState.currentMoveIndex, 1, "Should be at first move")
         XCTAssertNil(pgnCore.gameState.piece(at: "c7"), "Black pawn should have moved from c7")
@@ -58,6 +59,7 @@ final class PgnCoreParsingTests: XCTestCase {
         XCTAssertNotNil(pgnCore.gameState.piece(at: "f3"), "White knight should be at f3")
 
         // 2. a7 -> a6 (Black)
+        pgnCore.next()
         XCTAssertNil(pgnCore.gameState.piece(at: "a7"), "Black pawn should have moved from a7")
         XCTAssertNotNil(pgnCore.gameState.piece(at: "a6"), "Black pawn should be at a6")
 
@@ -67,6 +69,7 @@ final class PgnCoreParsingTests: XCTestCase {
         XCTAssertNotNil(pgnCore.gameState.piece(at: "a7"), "Black pawn should be at a7")
         XCTAssertNil(pgnCore.gameState.piece(at: "a6"), "Black pawn should have moved from a6")
 
+        pgnCore.previous()
         XCTAssertNotNil(pgnCore.gameState.piece(at: "g1"), "White knight should not be at g1")
         XCTAssertNil(pgnCore.gameState.piece(at: "f3"), "White knight should not be at f3")
     }

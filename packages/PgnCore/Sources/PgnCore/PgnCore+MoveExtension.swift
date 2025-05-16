@@ -15,6 +15,29 @@ extension PgnCore {
         }
     }
 
+    /// Applies only the white move from a MoveData
+    internal func applyWhiteMove(_ move: MoveData) {
+        guard let whiteMove = move.whiteMove else { return }
+        // Remove the move number prefix (e.g., "1. e4" -> "e4")
+        let moveWithoutNumber = String(whiteMove.dropFirst(2))
+        processMove(moveWithoutNumber, for: .white)
+    }
+
+    /// Applies only the black move from a MoveData
+    internal func applyBlackMove(_ move: MoveData) {
+        guard let blackMove = move.blackMove else { return }
+        processMove(blackMove, for: .black)
+    }
+
+    /// Applies the appropriate half-move based on the current move index
+    internal func applyHalfMove(_ move: MoveData, isWhiteToMove: Bool) {
+        if isWhiteToMove {
+            applyWhiteMove(move)
+        } else {
+            applyBlackMove(move)
+        }
+    }
+
     /// Processes a single move notation and updates the board
     /// - Parameters:
     ///   - moveNotation: The algebraic notation of the move
@@ -94,6 +117,10 @@ extension PgnCore {
         if let piece = gameState.piece(at: from) {
             gameState.setPiece(piece, at: to)
             gameState.setPiece(nil, at: from)
+
+            // Set highlighted squares for move visualization
+            gameState.highlightedFromSquare = from
+            gameState.highlightedToSquare = to
         }
     }
 
