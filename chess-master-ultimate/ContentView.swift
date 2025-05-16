@@ -32,36 +32,64 @@ let config = ChessBoardConfig(
 
 struct ContentView: View {
     @Environment(PgnCore.self) var pgnCore
-    @State private var selectedIndex: Int = 0
 
     var body: some View {
         NavigationSplitView(sidebar: {
             GamesList()
 
         }, detail: {
-            ChessBoardView(
-                config: config,
-                gameState: pgnCore.gameState,
-                onSquareTap: { square in
-                    print("Tapped square: \(square)")
+            if pgnCore.gameState.metadata == nil {
+                Text("No game loaded")
+                    .foregroundStyle(.secondary)
+            } else {
+                VStack {
+                    ChessBoardView(
+                        config: config,
+                        gameState: pgnCore.gameState,
+                        onSquareTap: { square in
+                            print("Tapped square: \(square)")
+                        }
+                    )
+                    HStack {
+                        Text("Move: \(pgnCore.gameState.currentMoveIndex)")
+                    }
                 }
-            )
+            }
         })
         .navigationTitle(pgnCore.gameState.metadata?.event ?? "Chess Game")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button("Previous") {
-                    pgnCore.previous()
-                }
+                Button(action: {
+                    pgnCore.first()
+                }, label: {
+                    Label("First", systemImage: "chevron.left.2")
+                })
                 .disabled(!pgnCore.gameState.hasPreviousMove)
             }
             ToolbarItem(placement: .primaryAction) {
-                Button("Next") {
+                Button(action: {
+                    pgnCore.previous()
+                }, label: {
+                    Label("Previous", systemImage: "chevron.left")
+                })
+                .disabled(!pgnCore.gameState.hasPreviousMove)
+            }
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: {
                     pgnCore.next()
-                }
+                }, label: {
+                    Label("Next", systemImage: "chevron.right")
+                })
                 .disabled(!pgnCore.gameState.hasNextMove)
             }
-
+            ToolbarItem(placement: .primaryAction) {
+                Button(action: {
+                    pgnCore.last()
+                }, label: {
+                    Label("Last", systemImage: "chevron.right.2")
+                })
+                .disabled(!pgnCore.gameState.hasNextMove)
+            }
             ToolbarItem(placement: .primaryAction) {
                 Button {
                     loadPGNFile()

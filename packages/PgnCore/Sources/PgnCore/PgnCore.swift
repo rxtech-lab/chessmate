@@ -73,7 +73,7 @@ public struct GameState {
     var historyData: [MoveData] = []
 
     /// Current position in the move list (0-based index)
-    var currentMoveIndex: Int = 0
+    public internal(set) var currentMoveIndex: Int = 0
 
     /// The white player
     var whitePlayer: Player?
@@ -126,7 +126,7 @@ public struct GameState {
     }
 
     public init() {
-        self.metadata = GameMetadata()
+        self.metadata = nil
         self.historyData = []
         self.currentMoveIndex = -1
         self.whitePlayer = nil
@@ -405,7 +405,7 @@ public class PgnCore: PgnCoreProtocol {
                     // If this was a match that ended with a new tag, we need to find the actual start of the next game
                     if gameEndIndex < nsContent.length
                         && nsContent.substring(with: NSRange(location: gameEndIndex - 1, length: 1))
-                            == "["
+                        == "["
                     {
                         lastEndIndex = gameEndRange.location + gameEndRange.length - 1
                     } else {
@@ -550,7 +550,7 @@ public class PgnCore: PgnCoreProtocol {
                     if let whiteMove = currentWhiteMove {
                         let moveText =
                             "\(currentMoveNumber). \(whiteMove)"
-                            + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
+                                + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
 
                         let move = MoveData(
                             moveNumber: currentMoveNumber,
