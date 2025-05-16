@@ -1,7 +1,6 @@
 import SwiftUI
 
 /// A view that represents a chess board with pieces
-@MainActor
 public struct ChessBoardView: View {
     /// The configuration for the chess board
     private let config: ChessBoardConfig
@@ -25,6 +24,26 @@ public struct ChessBoardView: View {
         self.onSquareTap = onSquareTap
     }
 
+    /// Gets the appropriate piece image for a given square
+    private func pieceImage(for square: String) -> Image? {
+        guard let piece = gameState.piece(at: square) else { return nil }
+
+        switch (piece.color, piece.type) {
+        case (.white, .king): return config.whitePieces.king
+        case (.white, .queen): return config.whitePieces.queen
+        case (.white, .rook): return config.whitePieces.rook
+        case (.white, .bishop): return config.whitePieces.bishop
+        case (.white, .knight): return config.whitePieces.knight
+        case (.white, .pawn): return config.whitePieces.pawn
+        case (.black, .king): return config.blackPieces.king
+        case (.black, .queen): return config.blackPieces.queen
+        case (.black, .rook): return config.blackPieces.rook
+        case (.black, .bishop): return config.blackPieces.bishop
+        case (.black, .knight): return config.blackPieces.knight
+        case (.black, .pawn): return config.blackPieces.pawn
+        }
+    }
+
     public var body: some View {
         VStack(spacing: 0) {
             ForEach((0...7).reversed(), id: \.self) { rank in
@@ -39,7 +58,8 @@ public struct ChessBoardView: View {
                             onTap: {
                                 selectedSquare = square
                                 onSquareTap(square)
-                            }
+                            },
+                            pieceImage: pieceImage(for: square)
                         )
                     }
                 }
@@ -59,6 +79,7 @@ private struct SquareView: View {
     let config: ChessBoardConfig
     let isSelected: Bool
     let onTap: () -> Void
+    let pieceImage: Image?
 
     var body: some View {
         ZStack {
@@ -69,8 +90,12 @@ private struct SquareView: View {
                         .stroke(Color.blue, lineWidth: isSelected ? 2 : 0)
                 )
 
-            // TODO: Add piece image here based on the current game state
-            // This will be implemented when we add piece position tracking
+            if let pieceImage = pieceImage {
+                pieceImage
+                    .resizable()
+                    .scaledToFit()
+                    .padding(config.squareSize * 0.1)
+            }
 
             Text(square)
                 .font(.system(size: 10))
@@ -81,34 +106,4 @@ private struct SquareView: View {
         .frame(width: config.squareSize, height: config.squareSize)
         .onTapGesture(perform: onTap)
     }
-}
-
-#Preview {
-    // Example configuration with placeholder URLs
-    let config = ChessBoardConfig(
-        whitePieces: .init(
-            king: URL(string: "https://example.com/wk.png")!,
-            queen: URL(string: "https://example.com/wq.png")!,
-            rook: URL(string: "https://example.com/wr.png")!,
-            bishop: URL(string: "https://example.com/wb.png")!,
-            knight: URL(string: "https://example.com/wn.png")!,
-            pawn: URL(string: "https://example.com/wp.png")!
-        ),
-        blackPieces: .init(
-            king: URL(string: "https://example.com/bk.png")!,
-            queen: URL(string: "https://example.com/bq.png")!,
-            rook: URL(string: "https://example.com/br.png")!,
-            bishop: URL(string: "https://example.com/bb.png")!,
-            knight: URL(string: "https://example.com/bn.png")!,
-            pawn: URL(string: "https://example.com/bp.png")!
-        )
-    )
-
-    return ChessBoardView(
-        config: config,
-        gameState: GameState(),
-        onSquareTap: { square in
-            print("Tapped square: \(square)")
-        }
-    )
 }

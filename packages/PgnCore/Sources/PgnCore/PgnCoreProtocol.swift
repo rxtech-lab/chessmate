@@ -1,13 +1,23 @@
 import SwiftUI
 
-@MainActor
 public protocol PgnCoreProtocol {
-    // Load a png file
+    // Game management
+    /// Load a pgn file
     func load(from file: URL) -> String
 
-    // make a move
-    // TODO: from and to should be a custom type that represents a move
-    // including the position of the piece and side of the player.
+    /// Get all games from the loaded PGN file
+    var games: [Game] { get }
+
+    /// Currently selected game index
+    var currentGameIndex: Int { get set }
+
+    /// Load a specific game from the parsed games
+    func loadGame(game: Game)
+
+    // Move management
+    /// Make a move
+    /// TODO: from and to should be a custom type that represents a move
+    /// including the position of the piece and side of the player.
     func makeMove(as player: Player, from: String, to: String) throws
 
     /// Play to the next move

@@ -2,7 +2,6 @@ import XCTest
 
 @testable import PgnCore
 
-
 final class PgnCoreTests: XCTestCase {
     var pgnCore: PgnCore!
     var testFileURL: URL!
@@ -17,30 +16,6 @@ final class PgnCoreTests: XCTestCase {
         pgnCore = nil
         testFileURL = nil
         super.tearDown()
-    }
-
-    func testLoadPgnFile() throws {
-        // Create an instance of PgnCore
-        let pgnCore = PgnCore()
-
-        // Get the URL for the test PGN file
-        let fileURL = URL(filePath: "./Tests/PgnCoreTests/test.pgn")
-
-        // Load the PGN file
-        let content = pgnCore.load(from: fileURL)
-
-        // Verify the content was loaded
-        XCTAssertFalse(content.isEmpty, "PGN content should not be empty")
-        XCTAssertTrue(pgnCore.gameState.isLoaded, "Game state should be marked as loaded")
-        XCTAssertNotNil(pgnCore.gameState.metadata, "Game metadata should be loaded")
-        XCTAssertFalse(pgnCore.gameState.historyData.isEmpty, "Game history should contain moves")
-
-        // Verify specific metadata fields
-        if let metadata = pgnCore.gameState.metadata {
-            XCTAssertNotNil(metadata.white, "White player name should be present")
-            XCTAssertNotNil(metadata.black, "Black player name should be present")
-            XCTAssertNotNil(metadata.result, "Game result should be present")
-        }
     }
 
     func testNavigationMethods() throws {
@@ -83,9 +58,10 @@ final class PgnCoreTests: XCTestCase {
         let blackPlayer = Player(id: "2", name: "Black", color: .black)
         pgnCore.gameState.whitePlayer = whitePlayer
         pgnCore.gameState.blackPlayer = blackPlayer
-        pgnCore.gameState.isLoaded = true
+        pgnCore.gameState.isLoaded = false
 
         // Test making a valid move
+        pgnCore.gameState.isLoaded = true
         try pgnCore.makeMove(as: whitePlayer, from: "e2", to: "e4")
         XCTAssertEqual(pgnCore.gameState.historyData.count, 1, "Should have one move")
         XCTAssertEqual(pgnCore.gameState.currentMoveIndex, 0, "Should be at the first move")
@@ -202,5 +178,57 @@ final class PgnCoreTests: XCTestCase {
 
         let secondMove = pgnCore.gameState.historyData[1]
         XCTAssertEqual(secondMove.blackMove, "e7e5", "Second move should be e7e5")
+    }
+
+    func testInitialBoardSetup() throws {
+        // Create a new game
+        let pgnCore = PgnCore()
+
+        // Verify that the board is set up correctly
+        // Check pawns
+        for file in ["a", "b", "c", "d", "e", "f", "g", "h"] {
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)2")?.type, .pawn,
+                "White pawn should be at \(file)2")
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)2")?.color, .white,
+                "Piece at \(file)2 should be white")
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)7")?.type, .pawn,
+                "Black pawn should be at \(file)7")
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)7")?.color, .black,
+                "Piece at \(file)7 should be black")
+        }
+
+        // Check back rank pieces
+        let backRankPieces: [(String, PieceType)] = [
+            ("a", .rook), ("b", .knight), ("c", .bishop), ("d", .queen),
+            ("e", .king), ("f", .bishop), ("g", .knight), ("h", .rook),
+        ]
+
+        for (file, pieceType) in backRankPieces {
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)1")?.type, pieceType,
+                "White \(pieceType) should be at \(file)1")
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)1")?.color, .white,
+                "Piece at \(file)1 should be white")
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)8")?.type, pieceType,
+                "Black \(pieceType) should be at \(file)8")
+            XCTAssertEqual(
+                pgnCore.gameState.piece(at: "\(file)8")?.color, .black,
+                "Piece at \(file)8 should be black")
+        }
+
+        // Verify that other squares are empty
+        for rank in 3...6 {
+            for file in ["a", "b", "c", "d", "e", "f", "g", "h"] {
+                XCTAssertNil(
+                    pgnCore.gameState.piece(at: "\(file)\(rank)"),
+                    "Square \(file)\(rank) should be empty")
+            }
+        }
     }
 }

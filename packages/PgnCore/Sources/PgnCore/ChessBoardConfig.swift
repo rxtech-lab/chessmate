@@ -3,24 +3,46 @@ import SwiftUI
 
 /// Configuration for chess piece images and board appearance
 public struct ChessBoardConfig {
-    /// URLs for white chess pieces
+    /// Images for white chess pieces
     public struct WhitePieces {
-        public let king: URL
-        public let queen: URL
-        public let rook: URL
-        public let bishop: URL
-        public let knight: URL
-        public let pawn: URL
+        public let king: Image
+        public let queen: Image
+        public let rook: Image
+        public let bishop: Image
+        public let knight: Image
+        public let pawn: Image
+
+        public init(
+            king: Image, queen: Image, rook: Image, bishop: Image, knight: Image, pawn: Image
+        ) {
+            self.king = king
+            self.queen = queen
+            self.rook = rook
+            self.bishop = bishop
+            self.knight = knight
+            self.pawn = pawn
+        }
     }
 
-    /// URLs for black chess pieces
+    /// Images for black chess pieces
     public struct BlackPieces {
-        public let king: URL
-        public let queen: URL
-        public let rook: URL
-        public let bishop: URL
-        public let knight: URL
-        public let pawn: URL
+        public let king: Image
+        public let queen: Image
+        public let rook: Image
+        public let bishop: Image
+        public let knight: Image
+        public let pawn: Image
+
+        public init(
+            king: Image, queen: Image, rook: Image, bishop: Image, knight: Image, pawn: Image
+        ) {
+            self.king = king
+            self.queen = queen
+            self.rook = rook
+            self.bishop = bishop
+            self.knight = knight
+            self.pawn = pawn
+        }
     }
 
     /// The URLs for white pieces

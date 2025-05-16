@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DF2F33FC2DD7709E00D815A9 /* PgnCore in Frameworks */ = {isa = PBXBuildFile; productRef = DF2F33FB2DD7709E00D815A9 /* PgnCore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		DF2F33D92DD72DA400D815A9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -29,9 +33,22 @@
 		DF2F33E22DD72DA400D815A9 /* chess-master-ultimateUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "chess-master-ultimateUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DF2F341A2DD79F7100D815A9 /* Exceptions for "chess-master-ultimate" folder in "chess-master-ultimate" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = DF2F33C62DD72DA300D815A9 /* chess-master-ultimate */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		DF2F33C92DD72DA300D815A9 /* chess-master-ultimate */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DF2F341A2DD79F7100D815A9 /* Exceptions for "chess-master-ultimate" folder in "chess-master-ultimate" target */,
+			);
 			path = "chess-master-ultimate";
 			sourceTree = "<group>";
 		};
@@ -52,6 +69,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DF2F33FC2DD7709E00D815A9 /* PgnCore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +130,7 @@
 			);
 			name = "chess-master-ultimate";
 			packageProductDependencies = (
+				DF2F33FB2DD7709E00D815A9 /* PgnCore */,
 			);
 			productName = "chess-master-ultimate";
 			productReference = DF2F33C72DD72DA300D815A9 /* chess-master-ultimate.app */;
@@ -195,6 +214,9 @@
 			);
 			mainGroup = DF2F33BE2DD72DA300D815A9;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DF2F33FA2DD7709D00D815A9 /* XCLocalSwiftPackageReference "packages/PgnCore" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DF2F33C82DD72DA300D815A9 /* Products */;
 			projectDirPath = "";
@@ -401,6 +423,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "chess-master-ultimate/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -428,6 +451,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "chess-master-ultimate/Info.plist";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -549,6 +573,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		DF2F33FA2DD7709D00D815A9 /* XCLocalSwiftPackageReference "packages/PgnCore" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = packages/PgnCore;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		DF2F33FB2DD7709E00D815A9 /* PgnCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PgnCore;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = DF2F33BF2DD72DA300D815A9 /* Project object */;
 }
