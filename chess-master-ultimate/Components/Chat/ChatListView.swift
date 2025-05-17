@@ -49,6 +49,13 @@ struct ChatListView: View {
                     .padding(.top, 10)
                     .padding(.bottom, 8)
                 }
+                .onChange(of: chat.messages) { _, _ in
+                    if let lastMessage = chat.messages.last {
+                        withAnimation(.easeInOut(duration: 0.3)) {
+                            proxy.scrollTo(lastMessage.id, anchor: .bottom)
+                        }
+                    }
+                }
                 .onChange(of: chat.messages.count) { _, _ in
                     if let lastMessage = chat.messages.last {
                         withAnimation {
