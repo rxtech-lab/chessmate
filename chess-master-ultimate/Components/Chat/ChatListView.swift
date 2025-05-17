@@ -50,12 +50,13 @@ struct ChatListView: View {
                 onSend: {
                     Task {
                         do {
-                            try await sendMessage(message: newMessage)
+                            let message = newMessage
+                            newMessage = ""
+                            try await sendMessage(message: message)
                         } catch {
                             print("Error sending message: \(error)")
                             self.error = error
                         }
-                        newMessage = ""
                     }
                 }
             )
@@ -76,13 +77,14 @@ struct ChatListView: View {
     func sendMessage(message: String) async throws {
         let stream = try await chatModel.chat(history: chat.messages, text: message, gameState: gameState)
         chat.messages.append(.init(role: .user, content: message))
-        var finalMessage = Message(role: .assistant, content: "...")
+        let finalMessage = Message(role: .assistant, content: "...")
         chat.messages.append(finalMessage)
         for try await message in stream {
-            finalMessage = message
             // find the pending message by id
+            print("Messages: \(chat.messages.map { $0.id })")
+            print("Final Message: \(finalMessage.id)")
             if let index = chat.messages.firstIndex(where: { $0.id == finalMessage.id }) {
-                chat.messages[index].content = finalMessage.content
+                chat.messages[index].content = message.content
             }
         }
     }

@@ -23,5 +23,9 @@ struct chess_master_ultimateApp: App {
                     Chat.self
                 ])
         }
+
+        Settings {
+            SettingsViews()
+        }
     }
 }

@@ -25,12 +25,13 @@ class Chat {
 
 @Model
 class Message {
-    var id = UUID()
+    var id: UUID
     var role: Role
     var content: String
     var createdAt: Date
 
     init(role: Role, content: String) {
+        self.id = UUID()
         self.role = role
         self.content = content
         self.createdAt = Date()

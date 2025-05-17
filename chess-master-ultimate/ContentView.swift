@@ -34,6 +34,10 @@ let config = ChessBoardConfig(
 struct ContentView: View {
     @Environment(PgnCore.self) var pgnCore
     @Environment(\.modelContext) private var modelContext
+    @Environment(ChatModel.self) var chatModel
+    @AppStorage("openAIUrl") var openAIUrl: String = ""
+    @AppStorage("openAIKey") var openAIKey: String = ""
+    @AppStorage("openAIModel") var openAIModel: String = ""
 
     @State private var chat: Chat? = nil
 
@@ -67,16 +71,25 @@ struct ContentView: View {
                     ChatListView(chat: chat, gameState: pgnCore.gameState)
                         .frame(minWidth: 200)
                 }
-
             }
         )
-        .onChange(of: self.pgnCore.gameState.metadata) { _, _ in
+        .onChange(of: pgnCore.gameState.metadata) { _, _ in
             loadChat()
         }
         .task {
             loadChat()
+            loadAI()
         }
-        .navigationTitle(self.pgnCore.gameState.metadata?.event ?? "Chess Game")
+        .onChange(of: openAIKey) { _, _ in
+            loadAI()
+        }
+        .onChange(of: openAIUrl) { _, _ in
+            loadAI()
+        }
+        .onChange(of: openAIModel) { _, _ in
+            loadAI()
+        }
+        .navigationTitle(pgnCore.gameState.metadata?.event ?? "Chess Game")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(
@@ -132,6 +145,12 @@ struct ContentView: View {
             }
         }
     }
+
+    func loadAI() {
+        if let url = URL(string: openAIUrl) {
+            chatModel.load(url: url, apiKey: openAIKey, model: .custom(model: openAIModel))
+        }
+    }
 }
 
 extension ContentView {
@@ -158,11 +177,11 @@ extension ContentView {
         var query = FetchDescriptor<Chat>(predicate: #Predicate { $0.gameId == id })
         query.fetchLimit = 1
         if let result = try? modelContext.fetch(query), let chatData = result.first {
-            self.chat = chatData
+            chat = chatData
         } else {
             // create a new chat
             let newChat = Chat(id: .init(), gameId: metadata.id, messages: [])
-            self.chat = newChat
+            chat = newChat
         }
     }
 }
