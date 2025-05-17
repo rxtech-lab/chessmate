@@ -19,7 +19,7 @@ public struct MoveData {
 }
 
 /// Represents the metadata of a chess game
-public struct GameMetadata {
+public struct GameMetadata: Equatable {
     /// Event name (e.g., "FIDE World Championship")
     public var event: String?
 
@@ -40,13 +40,17 @@ public struct GameMetadata {
 
     /// Result of the game (1-0, 0-1, 1/2-1/2, or *)
     public var result: String?
+
+    public var id: String {
+        return event! + date! + white! + black!
+    }
 }
 
 /// Represents a single game from a PGN file
 public struct Game: Identifiable, Hashable, Equatable {
     /// Unique identifier for the game
     public var id: String {
-        return metadata.event! + metadata.date! + metadata.white! + metadata.black!
+        return metadata.id
     }
 
     /// Game metadata

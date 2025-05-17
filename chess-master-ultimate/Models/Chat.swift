@@ -11,6 +11,7 @@ import SwiftData
 
 @Model
 class Chat {
+    #Unique<Chat>([\.gameId])
     var id: UUID
     var gameId: String
     var messages: [Message]
@@ -24,6 +25,7 @@ class Chat {
 
 @Model
 class Message {
+    var id = UUID()
     var role: Role
     var content: String
     var createdAt: Date

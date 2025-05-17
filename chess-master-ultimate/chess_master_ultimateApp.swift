@@ -12,11 +12,13 @@ import SwiftUI
 @main
 struct chess_master_ultimateApp: App {
     @State private var pgnCore = PgnCore()
+    @State private var chatModel = ChatModel()
 
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environment(pgnCore)
+                .environment(chatModel)
                 .modelContainer(for: [
                     Chat.self
                 ])

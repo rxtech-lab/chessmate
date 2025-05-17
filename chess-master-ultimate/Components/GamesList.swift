@@ -35,7 +35,7 @@ public struct GamesList: View {
                     .padding(.vertical, 4)
                 }
             }
-            .listStyle(.plain)
+            .listStyle(.sidebar)
             .onChange(of: selectedGame) { _, newGame in
                 if let newGame = newGame {
                     pgnCore.loadGame(game: newGame)

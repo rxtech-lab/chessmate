@@ -20,6 +20,7 @@ class ChatModel {
         self.model = model
     }
 
+    @MainActor
     func chat(history: [Message], text: String, gameState: GameState) async throws -> AsyncThrowingStream<Message, Error> {
         guard let url = url else {
             throw NSError(domain: "URL is nil", code: 0, userInfo: nil)

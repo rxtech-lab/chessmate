@@ -6,6 +6,7 @@
 //
 
 import PgnCore
+import SwiftData
 import SwiftUI
 import UniformTypeIdentifiers
 
@@ -32,67 +33,94 @@ let config = ChessBoardConfig(
 
 struct ContentView: View {
     @Environment(PgnCore.self) var pgnCore
+    @Environment(\.modelContext) private var modelContext
+
+    @State private var chat: Chat? = nil
 
     var body: some View {
-        NavigationSplitView(sidebar: {
-            GamesList()
-
-        }, content: {
-            if pgnCore.gameState.metadata == nil {
-                Text("No game loaded")
-                    .foregroundStyle(.secondary)
-            } else {
-                VStack {
-                    ChessBoardView(
-                        config: config,
-                        gameState: pgnCore.gameState,
-                        onSquareTap: { square in
-                            print("Tapped square: \(square)")
+        NavigationSplitView(
+            sidebar: {
+                GamesList()
+            },
+            content: {
+                if self.pgnCore.gameState.metadata == nil {
+                    Text("No game loaded")
+                        .foregroundStyle(.secondary)
+                } else {
+                    VStack {
+                        ChessBoardView(
+                            config: config,
+                            gameState: self.pgnCore.gameState,
+                            onSquareTap: { square in
+                                print("Tapped square: \(square)")
+                            }
+                        )
+                        HStack {
+                            Text("Move: \(self.pgnCore.gameState.currentMoveIndex)")
                         }
-                    )
-                    HStack {
-                        Text("Move: \(pgnCore.gameState.currentMoveIndex)")
                     }
+                    .frame(minWidth: 450)
                 }
-                .frame(minWidth: 450)
+            },
+            detail: {
+                if let chat = chat {
+                    ChatListView(chat: chat, gameState: pgnCore.gameState)
+                        .frame(minWidth: 200)
+                }
+
             }
-        }, detail: {
-            Text("ChatView")
-                .frame(minWidth: 200, maxWidth: 300)
-        })
-        .navigationTitle(pgnCore.gameState.metadata?.event ?? "Chess Game")
+        )
+        .onChange(of: self.pgnCore.gameState.metadata) { _, _ in
+            loadChat()
+        }
+        .task {
+            loadChat()
+        }
+        .navigationTitle(self.pgnCore.gameState.metadata?.event ?? "Chess Game")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    pgnCore.first()
-                }, label: {
-                    Label("First", systemImage: "chevron.left.2")
-                })
-                .disabled(!pgnCore.gameState.hasPreviousMove)
+                Button(
+                    action: {
+                        self.pgnCore.first()
+                    },
+                    label: {
+                        Label("First", systemImage: "chevron.left.2")
+                    }
+                )
+                .disabled(!self.pgnCore.gameState.hasPreviousMove)
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    pgnCore.previous()
-                }, label: {
-                    Label("Previous", systemImage: "chevron.left")
-                })
-                .disabled(!pgnCore.gameState.hasPreviousMove)
+                Button(
+                    action: {
+                        self.pgnCore.previous()
+                    },
+                    label: {
+                        Label("Previous", systemImage: "chevron.left")
+                    }
+                )
+                .disabled(!self.pgnCore.gameState.hasPreviousMove)
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    pgnCore.next()
-                }, label: {
-                    Label("Next", systemImage: "chevron.right")
-                })
-                .disabled(!pgnCore.gameState.hasNextMove)
+                Button(
+                    action: {
+                        self.pgnCore.next()
+                    },
+                    label: {
+                        Label("Next", systemImage: "chevron.right")
+                    }
+                )
+                .disabled(!self.pgnCore.gameState.hasNextMove)
             }
             ToolbarItem(placement: .primaryAction) {
-                Button(action: {
-                    pgnCore.last()
-                }, label: {
-                    Label("Last", systemImage: "chevron.right.2")
-                })
-                .disabled(!pgnCore.gameState.hasNextMove)
+                Button(
+                    action: {
+                        self.pgnCore.last()
+                    },
+                    label: {
+                        Label("Last", systemImage: "chevron.right.2")
+                    }
+                )
+                .disabled(!self.pgnCore.gameState.hasNextMove)
             }
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -118,8 +146,23 @@ extension ContentView {
         panel.begin { result in
             if result == .OK {
                 guard let url = panel.url else { return }
-                _ = pgnCore.load(from: url)
+                _ = self.pgnCore.load(from: url)
             }
+        }
+    }
+
+    func loadChat() {
+        guard let metadata = pgnCore.gameState.metadata else { return }
+        // fetch chat
+        let id = metadata.id
+        var query = FetchDescriptor<Chat>(predicate: #Predicate { $0.gameId == id })
+        query.fetchLimit = 1
+        if let result = try? modelContext.fetch(query), let chatData = result.first {
+            self.chat = chatData
+        } else {
+            // create a new chat
+            let newChat = Chat(id: .init(), gameId: metadata.id, messages: [])
+            self.chat = newChat
         }
     }
 }
