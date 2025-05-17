@@ -37,7 +37,7 @@ struct ContentView: View {
         NavigationSplitView(sidebar: {
             GamesList()
 
-        }, detail: {
+        }, content: {
             if pgnCore.gameState.metadata == nil {
                 Text("No game loaded")
                     .foregroundStyle(.secondary)
@@ -54,7 +54,11 @@ struct ContentView: View {
                         Text("Move: \(pgnCore.gameState.currentMoveIndex)")
                     }
                 }
+                .frame(minWidth: 450)
             }
+        }, detail: {
+            Text("ChatView")
+                .frame(minWidth: 200, maxWidth: 300)
         })
         .navigationTitle(pgnCore.gameState.metadata?.event ?? "Chess Game")
         .toolbar {

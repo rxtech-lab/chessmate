@@ -6,6 +6,7 @@
 //
 
 import PgnCore
+import SwiftData
 import SwiftUI
 
 @main
@@ -16,6 +17,9 @@ struct chess_master_ultimateApp: App {
         WindowGroup {
             ContentView()
                 .environment(pgnCore)
+                .modelContainer(for: [
+                    Chat.self
+                ])
         }
     }
 }

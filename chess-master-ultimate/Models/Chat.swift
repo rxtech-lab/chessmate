@@ -1,0 +1,41 @@
+//
+//  Chat.swift
+//  chess-master-ultimate
+//
+//  Created by Qiwei Li on 5/17/25.
+//
+
+import Foundation
+import PgnCore
+import SwiftData
+
+@Model
+class Chat {
+    var id: UUID
+    var gameId: String
+    var messages: [Message]
+
+    init(id: UUID, gameId: String, messages: [Message]) {
+        self.id = id
+        self.gameId = gameId
+        self.messages = messages
+    }
+}
+
+@Model
+class Message {
+    var role: Role
+    var content: String
+    var createdAt: Date
+
+    init(role: Role, content: String) {
+        self.role = role
+        self.content = content
+        self.createdAt = Date()
+    }
+}
+
+enum Role: String, Codable {
+    case user
+    case assistant
+}

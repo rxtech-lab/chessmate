@@ -1,48 +1,6 @@
 import Foundation
 import SwiftUI
 
-/// Represents a single move in the game history
-public struct MoveData {
-    /// The move number in the game
-    var moveNumber: Int
-
-    /// The white player's move
-    var whiteMove: String?
-
-    /// The black player's move
-    var blackMove: String?
-
-    /// The full move text (e.g., "1. e4 e5")
-    var moveText: String
-
-    /// Any comments or annotations for this move
-    var comment: String?
-}
-
-/// Represents the metadata of a chess game
-public struct GameMetadata {
-    /// Event name (e.g., "FIDE World Championship")
-    public var event: String?
-
-    /// Site where the game was played
-    public var site: String?
-
-    /// Date when the game was played
-    public var date: String?
-
-    /// Round number in the tournament
-    public var round: String?
-
-    /// White player's name
-    public var white: String?
-
-    /// Black player's name
-    public var black: String?
-
-    /// Result of the game (1-0, 0-1, 1/2-1/2, or *)
-    public var result: String?
-}
-
 /// Represents a chess piece
 public struct Piece {
     public let color: Side
@@ -94,10 +52,10 @@ public struct GameState {
     var board: [String: Piece] = [:]
 
     /// The source square of the last move (for highlighting)
-    public internal(set) var highlightedFromSquare: String? = nil
+    public internal(set) var highlightedFromSquare: String?
 
     /// The destination square of the last move (for highlighting)
-    public internal(set) var highlightedToSquare: String? = nil
+    public internal(set) var highlightedToSquare: String?
 
     public var hasPreviousMove: Bool {
         return currentMoveIndex > 0
@@ -478,7 +436,7 @@ public class PgnCore: PgnCoreProtocol {
                     // If this was a match that ended with a new tag, we need to find the actual start of the next game
                     if gameEndIndex < nsContent.length
                         && nsContent.substring(with: NSRange(location: gameEndIndex - 1, length: 1))
-                            == "["
+                        == "["
                     {
                         lastEndIndex = gameEndRange.location + gameEndRange.length - 1
                     } else {
@@ -623,7 +581,7 @@ public class PgnCore: PgnCoreProtocol {
                     if let whiteMove = currentWhiteMove {
                         let moveText =
                             "\(currentMoveNumber). \(whiteMove)"
-                            + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
+                                + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
 
                         let move = MoveData(
                             moveNumber: currentMoveNumber,

@@ -205,7 +205,24 @@ extension PgnCore {
 
         case .pawn:
             // Basic pawn movement checks
-            return true
+            // First, determine the direction of movement based on color
+            let direction = (gameState.piece(at: from)?.color == .white) ? 1 : -1
+
+            // Check if it's a capture move (diagonal)
+            if fileDistance == 1 && rankDistance == 1 {
+                // For captures, the rank change must match the direction
+                return (toRank - fromRank) == direction
+            } else if fileDistance == 0 {
+                // For forward moves:
+                // If it's the first move, pawns can move 1 or 2 squares
+                if (fromRank == 2 && direction == 1) || (fromRank == 7 && direction == -1) {
+                    return rankDistance <= 2 && (toRank - fromRank) * direction > 0
+                } else {
+                    // Otherwise, pawns can only move 1 square forward
+                    return rankDistance == 1 && (toRank - fromRank) * direction > 0
+                }
+            }
+            return false
         }
     }
 
@@ -220,6 +237,17 @@ extension PgnCore {
 
         let toFile = to.prefix(1)
         let toRank = Int(String(to.suffix(1))) ?? 0
+
+        // Check if this is a pawn move
+        if let piece = gameState.piece(at: candidates[0]), piece.type == .pawn {
+            // For pawns, prioritize the one on the same file first (vertical movement)
+            for candidate in candidates {
+                let fromFile = candidate.prefix(1)
+                if fromFile == toFile {
+                    return candidate
+                }
+            }
+        }
 
         var closestDistance = Int.max
         var closestPiece = candidates[0]

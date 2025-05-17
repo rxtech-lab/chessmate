@@ -1,9 +1,53 @@
 import Foundation
 
+/// Represents a single move in the game history
+public struct MoveData {
+    /// The move number in the game
+    var moveNumber: Int
+
+    /// The white player's move
+    var whiteMove: String?
+
+    /// The black player's move
+    var blackMove: String?
+
+    /// The full move text (e.g., "1. e4 e5")
+    var moveText: String
+
+    /// Any comments or annotations for this move
+    var comment: String?
+}
+
+/// Represents the metadata of a chess game
+public struct GameMetadata {
+    /// Event name (e.g., "FIDE World Championship")
+    public var event: String?
+
+    /// Site where the game was played
+    public var site: String?
+
+    /// Date when the game was played
+    public var date: String?
+
+    /// Round number in the tournament
+    public var round: String?
+
+    /// White player's name
+    public var white: String?
+
+    /// Black player's name
+    public var black: String?
+
+    /// Result of the game (1-0, 0-1, 1/2-1/2, or *)
+    public var result: String?
+}
+
 /// Represents a single game from a PGN file
 public struct Game: Identifiable, Hashable, Equatable {
     /// Unique identifier for the game
-    public let id: UUID
+    public var id: String {
+        return metadata.event! + metadata.date! + metadata.white! + metadata.black!
+    }
 
     /// Game metadata
     public let metadata: GameMetadata
@@ -14,8 +58,7 @@ public struct Game: Identifiable, Hashable, Equatable {
     /// Raw PGN content for this game
     public let rawContent: String
 
-    public init(id: UUID = UUID(), metadata: GameMetadata, moves: [MoveData], rawContent: String) {
-        self.id = id
+    public init(metadata: GameMetadata, moves: [MoveData], rawContent: String) {
         self.metadata = metadata
         self.moves = moves
         self.rawContent = rawContent
