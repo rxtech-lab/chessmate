@@ -34,7 +34,21 @@ class ChatModel {
             throw NSError(domain: "Model is nil", code: 0, userInfo: nil)
         }
         let api = OpenAIClient(baseURL: url, apiKey: apiKey)
+        let langStr = Locale.current.language.languageCode?.identifier
         api.history = history
-        return api.generateStreamResponse(prompt: text, model: model)
+        let systemPrompt = """
+        You are a chess master and the world's best chess teacher.
+        You are given a chess position until the current move in PGN format,
+        and you need to analyze the given position and tell user the motive behind the move.
+        Also don't forget to answer any follow-up questions for the chess if needed.
+        Don't answer any other questions.
+
+        Current language: \(langStr ?? "en")
+        Answer the user's question in the same language the current language or user's questions's language.
+        The current position is:
+        \(gameState.getPreviousMoves())
+        """
+
+        return api.generateStreamResponse(systemText: systemPrompt, prompt: text, model: model)
     }
 }

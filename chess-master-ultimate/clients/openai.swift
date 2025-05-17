@@ -41,7 +41,7 @@ class OpenAIClient {
         self.baseURL = baseURL
     }
 
-    func generateStreamResponse(prompt: String, model: OpenAICompatibleModel) -> AsyncThrowingStream<Message, Error> {
+    func generateStreamResponse(systemText: String, prompt: String, model: OpenAICompatibleModel) -> AsyncThrowingStream<Message, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 do {
@@ -55,7 +55,9 @@ class OpenAIClient {
                     request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
                     request.addValue("application/json", forHTTPHeaderField: "Content-Type")
 
-                    var messages = history.map { ["role": $0.role.rawValue, "content": $0.content] }
+                    var messages: [[String: Any]] = []
+                    messages.append(["role": "system", "content": systemText])
+                    messages.append(contentsOf: history.map { ["role": $0.role.rawValue, "content": $0.content] })
                     messages.append(["role": "user", "content": prompt])
 
                     let requestBody: [String: Any] = [
@@ -74,7 +76,7 @@ class OpenAIClient {
                         throw OpenAIError.invalidResponse
                     }
 
-                    var total: String = ""
+                    var total = ""
                     for try await line in responseStream.lines {
                         if line.hasPrefix("data: "),
                            let data = line.dropFirst(6).data(using: .utf8),

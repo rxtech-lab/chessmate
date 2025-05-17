@@ -36,6 +36,13 @@ class Message {
         self.content = content
         self.createdAt = Date()
     }
+
+    init(id: UUID, role: Role, content: String, createdAt: Date) {
+        self.id = id
+        self.role = role
+        self.content = content
+        self.createdAt = createdAt
+    }
 }
 
 enum Role: String, Codable {

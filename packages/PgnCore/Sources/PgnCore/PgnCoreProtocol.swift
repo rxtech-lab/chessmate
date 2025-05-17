@@ -34,7 +34,4 @@ public protocol PgnCoreProtocol {
 
     /// Save the current game to a file using pgn format
     func save(to file: URL)
-
-    /// Get previous n moves
-    func getPreviousMoves(num moves: Int) -> [MoveData]
 }

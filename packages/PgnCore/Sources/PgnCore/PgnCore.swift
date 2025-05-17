@@ -86,6 +86,52 @@ public struct GameState {
         }
     }
 
+    // Get all the moves until the current move index.
+    // Output the pgn file format include the metadata and the moves.
+    public func getPreviousMoves() -> String {
+        var pgnContent = ""
+
+        // Write metadata
+        if let metadata = metadata {
+            if let event = metadata.event { pgnContent += "[Event \"\(event)\"]\n" }
+            if let site = metadata.site { pgnContent += "[Site \"\(site)\"]\n" }
+            if let date = metadata.date { pgnContent += "[Date \"\(date)\"]\n" }
+            if let round = metadata.round { pgnContent += "[Round \"\(round)\"]\n" }
+            if let white = metadata.white { pgnContent += "[White \"\(white)\"]\n" }
+            if let black = metadata.black { pgnContent += "[Black \"\(black)\"]\n" }
+            if let result = metadata.result { pgnContent += "[Result \"\(result)\"]\n" }
+            pgnContent += "\n"
+        }
+
+        // Write moves up to current index
+        let currentMoveNumber = Int(ceil(currentMoveIndex))
+        for i in 0..<currentMoveNumber {
+            if i < historyData.count {
+                let move = historyData[i]
+
+                // For the last move, check if we need to include black's move
+                if i == currentMoveNumber - 1
+                    && currentMoveIndex.truncatingRemainder(dividingBy: 1) == 0
+                {
+                    // Full move - include both white and black moves
+                    pgnContent += move.moveText + " "
+                } else if i == currentMoveNumber - 1
+                    && currentMoveIndex.truncatingRemainder(dividingBy: 1) == 0.5
+                {
+                    // Half move - include only white's move
+                    if let whiteMove = move.whiteMove {
+                        pgnContent += "\(move.moveNumber). \(whiteMove) "
+                    }
+                } else {
+                    // Full move before current position
+                    pgnContent += move.moveText + " "
+                }
+            }
+        }
+
+        return pgnContent.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     public init(
         metadata: GameMetadata? = nil, historyData: [MoveData], currentMoveIndex: Double,
         whitePlayer: Player? = nil, blackPlayer: Player? = nil, pgnContent: String, isLoaded: Bool,
@@ -357,27 +403,6 @@ public class PgnCore: PgnCoreProtocol {
         }
     }
 
-    /// Gets the previous n moves from the current position
-    /// - Parameter moves: The number of previous moves to retrieve
-    /// - Returns: An array of MoveData containing the previous moves, or an empty array if no moves are available
-    public func getPreviousMoves(num moves: Int) -> [MoveData] {
-        guard gameState.isLoaded, gameState.currentMoveIndex >= 0 else {
-            return []
-        }
-
-        let currentIndex = Int(gameState.currentMoveIndex)
-        let startIndex = max(0, currentIndex - moves + 1)
-        let endIndex = currentIndex + 1
-
-        // If we have a fractional moveIndex (white's move), we need to include the partial move
-        if gameState.currentMoveIndex.truncatingRemainder(dividingBy: 1) != 0 {
-            return Array(
-                gameState.historyData[startIndex..<min(endIndex, gameState.historyData.count)])
-        } else {
-            return Array(gameState.historyData[startIndex..<endIndex])
-        }
-    }
-
     // MARK: - Private Methods
 
     /// Parses a PGN file that may contain multiple games
@@ -436,7 +461,7 @@ public class PgnCore: PgnCoreProtocol {
                     // If this was a match that ended with a new tag, we need to find the actual start of the next game
                     if gameEndIndex < nsContent.length
                         && nsContent.substring(with: NSRange(location: gameEndIndex - 1, length: 1))
-                        == "["
+                            == "["
                     {
                         lastEndIndex = gameEndRange.location + gameEndRange.length - 1
                     } else {
@@ -581,7 +606,7 @@ public class PgnCore: PgnCoreProtocol {
                     if let whiteMove = currentWhiteMove {
                         let moveText =
                             "\(currentMoveNumber). \(whiteMove)"
-                                + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
+                            + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
 
                         let move = MoveData(
                             moveNumber: currentMoveNumber,

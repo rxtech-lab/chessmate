@@ -10,6 +10,7 @@ import SwiftUI
 struct MessageInputView: View {
     @Binding var text: String
     var onSend: () -> Void
+    var ask: () -> Void
 
     var body: some View {
         VStack(spacing: 0) {
@@ -25,6 +26,11 @@ struct MessageInputView: View {
                     }
             }
             HStack {
+                Button(action: {
+                    ask()
+                }) {
+                    Text("Ask about current move")
+                }
                 Spacer()
                 Button(action: {
                     if !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -57,6 +63,6 @@ struct MessageInputView: View {
 
 #Preview {
     MessageInputView(
-        text: .constant("Hello"), onSend: {}
+        text: .constant("Hello"), onSend: {}, ask: {}
     )
 }

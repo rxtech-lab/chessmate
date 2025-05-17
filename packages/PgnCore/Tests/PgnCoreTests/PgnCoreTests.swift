@@ -69,4 +69,96 @@ final class PgnCoreTests: XCTestCase {
             }
         }
     }
+
+    func testGetPreviousMoves() {
+        // Create a sample game state with metadata and some moves
+        let metadata = GameMetadata(
+            event: "Test Event",
+            site: "Test Site",
+            date: "2023.01.01",
+            round: "1",
+            white: "Player White",
+            black: "Player Black",
+            result: "1-0"
+        )
+
+        let moves = [
+            MoveData(
+                moveNumber: 1,
+                whiteMove: "e4",
+                blackMove: "e5",
+                moveText: "1. e4 e5",
+                comment: nil
+            ),
+            MoveData(
+                moveNumber: 2,
+                whiteMove: "Nf3",
+                blackMove: "Nc6",
+                moveText: "2. Nf3 Nc6",
+                comment: nil
+            ),
+            MoveData(
+                moveNumber: 3,
+                whiteMove: "Bc4",
+                blackMove: "Nf6",
+                moveText: "3. Bc4 Nf6",
+                comment: nil
+            ),
+        ]
+
+        // Test with full moves (after black's move)
+        pgnCore.gameState = GameState(
+            metadata: metadata,
+            historyData: moves,
+            currentMoveIndex: 2.0,  // After black's move in move 2
+            pgnContent: "",
+            isLoaded: true
+        )
+
+        var expected = """
+            [Event "Test Event"]
+            [Site "Test Site"]
+            [Date "2023.01.01"]
+            [Round "1"]
+            [White "Player White"]
+            [Black "Player Black"]
+            [Result "1-0"]
+
+            1. e4 e5 2. Nf3 Nc6
+            """
+
+        XCTAssertEqual(pgnCore.gameState.getPreviousMoves(), expected)
+
+        // Test with half move (after white's move)
+        pgnCore.gameState.currentMoveIndex = 2.5  // After white's move in move 3
+
+        expected = """
+            [Event "Test Event"]
+            [Site "Test Site"]
+            [Date "2023.01.01"]
+            [Round "1"]
+            [White "Player White"]
+            [Black "Player Black"]
+            [Result "1-0"]
+
+            1. e4 e5 2. Nf3 Nc6 3. Bc4
+            """
+
+        XCTAssertEqual(pgnCore.gameState.getPreviousMoves(), expected)
+
+        // Test with initial position
+        pgnCore.gameState.currentMoveIndex = 0.0
+
+        expected = """
+            [Event "Test Event"]
+            [Site "Test Site"]
+            [Date "2023.01.01"]
+            [Round "1"]
+            [White "Player White"]
+            [Black "Player Black"]
+            [Result "1-0"]
+            """
+
+        XCTAssertEqual(pgnCore.gameState.getPreviousMoves(), expected)
+    }
 }
