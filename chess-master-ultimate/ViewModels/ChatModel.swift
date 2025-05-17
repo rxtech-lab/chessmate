@@ -44,7 +44,13 @@ class ChatModel {
         Don't answer any other questions.
 
         Current language: \(langStr ?? "en")
+        IsFirstMove: \(gameState.hasPreviousMove ? "false" : "true")
+        IsLastMove: \(gameState.hasNextMove ? "false" : "true")
+        CurrentMove: \(gameState.currentMoveIndex)
+
         Answer the user's question in the same language the current language or user's questions's language.
+        If it is the first move, tell user make the first move then analyze the game.
+        If it is the last move, analyze the overall game and tell user the result.
         The current position is:
         \(gameState.getPreviousMoves())
         """

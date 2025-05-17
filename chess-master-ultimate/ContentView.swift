@@ -37,14 +37,16 @@ struct ContentView: View {
     @Environment(ChatModel.self) var chatModel
     @AppStorage("openAIUrl") var openAIUrl: String = ""
     @AppStorage("openAIKey") var openAIKey: String = ""
-    @AppStorage("openAIModel") var openAIModel: String = ""
+    @AppStorage("openAIModel") var currentModel: String = ""
 
     @State private var chat: Chat? = nil
+    @State private var game: Game? = nil
 
     var body: some View {
         NavigationSplitView(
             sidebar: {
-                GamesList()
+                GamesList(selectedGame: $game)
+                    .frame(minWidth: 100)
             },
             content: {
                 if self.pgnCore.gameState.metadata == nil {
@@ -63,21 +65,21 @@ struct ContentView: View {
                             Text("Move: \(self.pgnCore.gameState.currentMoveIndex)")
                         }
                     }
-                    .frame(minWidth: 450)
+                    .frame(minWidth: 500)
                 }
             },
             detail: {
                 if let chat = chat {
                     ChatListView(chat: chat, gameState: pgnCore.gameState)
-                        .frame(minWidth: 200)
+                        .frame(minWidth: 300)
                 }
             }
         )
-        .onChange(of: pgnCore.gameState.metadata) { _, _ in
-            loadChat()
+        .onChange(of: game) { _, newGame in
+            guard let newGame = newGame else { return }
+            loadChat(game: newGame)
         }
         .task {
-            loadChat()
             loadAI()
         }
         .onChange(of: openAIKey) { _, _ in
@@ -86,10 +88,10 @@ struct ContentView: View {
         .onChange(of: openAIUrl) { _, _ in
             loadAI()
         }
-        .onChange(of: openAIModel) { _, _ in
+        .onChange(of: currentModel) { _, _ in
             loadAI()
         }
-        .navigationTitle(pgnCore.gameState.metadata?.event ?? "Chess Game")
+        .navigationTitle(game?.summary ?? "Chess Game")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(
@@ -148,7 +150,7 @@ struct ContentView: View {
 
     func loadAI() {
         if let url = URL(string: openAIUrl) {
-            chatModel.load(url: url, apiKey: openAIKey, model: .custom(model: openAIModel))
+            chatModel.load(url: url, apiKey: openAIKey, model: .custom(model: currentModel))
         }
     }
 }
@@ -170,17 +172,16 @@ extension ContentView {
         }
     }
 
-    func loadChat() {
-        guard let metadata = pgnCore.gameState.metadata else { return }
+    func loadChat(game: Game) {
         // fetch chat
-        let id = metadata.id
+        let id = game.id
         var query = FetchDescriptor<Chat>(predicate: #Predicate { $0.gameId == id })
         query.fetchLimit = 1
         if let result = try? modelContext.fetch(query), let chatData = result.first {
             chat = chatData
         } else {
             // create a new chat
-            let newChat = Chat(id: .init(), gameId: metadata.id, messages: [])
+            let newChat = Chat(id: .init(), gameId: game.id, messages: [])
             chat = newChat
         }
     }

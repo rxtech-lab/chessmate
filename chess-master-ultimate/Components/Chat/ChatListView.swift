@@ -14,7 +14,12 @@ import AppKit
 #endif
 
 struct ChatListView: View {
+    @AppStorage("openAIModel") var openAIModel: String = ""
+    @AppStorage("customModel") var customModel: String = ""
+    @AppStorage("openAIUrl") var openAIUrl: String = ""
+
     @State var chat: Chat
+    private let initialChat: Chat
     let gameState: GameState
     @State private var newMessage: String = ""
     @State private var error: Error? = nil
@@ -25,6 +30,7 @@ struct ChatListView: View {
     init(chat: Chat, gameState: GameState) {
         self._chat = .init(initialValue: chat)
         self.gameState = gameState
+        self.initialChat = chat
     }
 
     var body: some View {
@@ -63,10 +69,16 @@ struct ChatListView: View {
                         }
                     }
                 }
+                .onChange(of: initialChat) { _, newVal in
+                    chat = newVal
+                }
             }
 
             MessageInputView(
                 text: $newMessage,
+                currentModel: .init(rawValue: openAIModel),
+                customModel: customModel == "" ? nil : .custom(model: customModel),
+                disableDefaultModel: openAIUrl != "https://openrouter.ai/api/v1",
                 onSend: {
                     Task {
                         do {
@@ -79,18 +91,22 @@ struct ChatListView: View {
                             self.showAlert = true
                         }
                     }
-                }
-            ) {
-                Task {
-                    do {
-                        try await askAboutCurrentMove()
-                    } catch {
-                        print("Error asking about current move: \(error)")
-                        self.error = error
-                        self.showAlert = true
+                },
+                ask: {
+                    Task {
+                        do {
+                            try await askAboutCurrentMove()
+                        } catch {
+                            print("Error asking about current move: \(error)")
+                            self.error = error
+                            self.showAlert = true
+                        }
                     }
+                },
+                onModelChange: { model in
+                    self.openAIModel = model.rawValue
                 }
-            }
+            )
         }
         .alert(
             "Error to chat", isPresented: $showAlert,
@@ -196,7 +212,7 @@ struct ChatMessageRow: View {
                         Text(markdown)
                             .padding(12)
                             .background(Color.gray.opacity(0.18))
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                             .frame(maxWidth: 280, alignment: .trailing)
                     }

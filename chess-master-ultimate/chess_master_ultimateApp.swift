@@ -27,6 +27,15 @@ struct chess_master_ultimateApp: App {
             OpenFileCommand(pgnCore: pgnCore)
         }
 
+        DocumentGroup(viewing: PgnFile.self) { _ in
+            ContentView()
+                .environment(pgnCore)
+                .environment(chatModel)
+                .modelContainer(for: [
+                    Chat.self
+                ])
+        }
+
         Settings {
             SettingsViews()
         }

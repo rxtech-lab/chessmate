@@ -1,19 +1,47 @@
 import Combine
 import Foundation
 
-enum OpenAIError: Error {
+enum OpenAIError: LocalizedError {
     case invalidURL
     case requestFailed(Error)
-    case invalidResponse
+    case invalidResponse(url: URL, textResponse: String)
     case decodingError
+
+    var errorDescription: String? {
+        switch self {
+        case .invalidURL:
+            return "Invalid URL."
+        case .requestFailed(let error):
+            return "Request failed: \(error.localizedDescription)"
+        case .invalidResponse(let url, let textResponse):
+            return "Invalid response from server.\n URL: \(url)\n Response: \(textResponse)"
+        case .decodingError:
+            return "Failed to decode response."
+        }
+    }
 }
 
-enum OpenAICompatibleModel {
+enum OpenAICompatibleModel: Hashable {
     case gpt4_1
     case gemini25Flash
     case gemini25Pro
     case claude37
     case custom(model: String)
+
+    init(rawValue: String) {
+        switch rawValue {
+        case "gpt-4.1":
+            self = .gpt4_1
+        case "google/gemini-2.5-flash-preview":
+            self = .gemini25Flash
+        case "google/gemini-2.5-pro-preview":
+            self = .gemini25Pro
+        case "anthropic/claude-3.7-sonnet":
+            self = .claude37
+        default:
+            self = .custom(model: rawValue)
+        }
+    }
 
     var rawValue: String {
         switch self {
@@ -27,6 +55,34 @@ enum OpenAICompatibleModel {
             return "google/gemini-2.5-pro-preview"
         case .claude37:
             return "anthropic/claude-3.7-sonnet"
+        }
+    }
+
+    var displayName: String {
+        switch self {
+        case .custom(let model):
+            return model
+        case .gpt4_1:
+            return "GPT-4.1"
+        case .gemini25Flash:
+            return "Gemini 2.5 Flash"
+        case .gemini25Pro:
+            return "Gemini 2.5 Pro"
+        case .claude37:
+            return "Claude 3.7"
+        }
+    }
+
+    static var allCases: [OpenAICompatibleModel] {
+        return [.gpt4_1, .gemini25Flash, .gemini25Pro, .claude37]
+    }
+
+    func hash(into hasher: inout Hasher) {
+        switch self {
+        case .custom(let model):
+            hasher.combine("custom:" + model)
+        default:
+            return hasher.combine(rawValue)
         }
     }
 }
@@ -73,7 +129,8 @@ class OpenAIClient {
                     guard let httpResponse = response as? HTTPURLResponse,
                           (200 ... 299).contains(httpResponse.statusCode)
                     else {
-                        throw OpenAIError.invalidResponse
+                        let textResponse = response.description
+                        throw OpenAIError.invalidResponse(url: url, textResponse: textResponse)
                     }
 
                     var total = ""

@@ -4,7 +4,11 @@ import SwiftUI
 /// A SwiftUI component that displays a list of games from a PGN file
 public struct GamesList: View {
     @Environment(PgnCore.self) var pgnCore
-    @State private var selectedGame: Game? = nil
+    @Binding private var selectedGame: Game?
+    
+    public init(selectedGame: Binding<Game?>) {
+        self._selectedGame = selectedGame
+    }
 
     public var body: some View {
         if pgnCore.games.isEmpty {

@@ -22,6 +22,7 @@
       }
     },
     "Ask about current move" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {
@@ -41,6 +42,9 @@
         }
       }
     },
+    "Custom Model" : {
+
+    },
     "Error to chat" : {
       "localizations" : {
         "zh-Hans" : {
@@ -50,6 +54,9 @@
           }
         }
       }
+    },
+    "Explain this move" : {
+
     },
     "First" : {
       "localizations" : {
@@ -152,6 +159,7 @@
       }
     },
     "OpenAI Model" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh-Hans" : {
           "stringUnit" : {

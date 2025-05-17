@@ -6,6 +6,6 @@
 //
 import UniformTypeIdentifiers
 
-extension UTType {
+public extension UTType {
     static let pgn = UTType(filenameExtension: "pgn")!
 }

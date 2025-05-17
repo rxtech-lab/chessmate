@@ -10,7 +10,7 @@ import SwiftUI
 struct SettingsViews: View {
     @AppStorage("openAIUrl") var openAIUrl: String = ""
     @AppStorage("openAIKey") var openAIKey: String = ""
-    @AppStorage("openAIModel") var openAIModel: String = ""
+    @AppStorage("customModel") var customModel: String = ""
     @State private var isValidUrl: Bool = true
 
     var body: some View {
@@ -42,7 +42,7 @@ struct SettingsViews: View {
 
                     TextField("OpenAI Key", text: $openAIKey)
 
-                    TextField("OpenAI Model", text: $openAIModel)
+                    TextField("Custom Model", text: $customModel)
                 }
             }
             .formStyle(.grouped)
