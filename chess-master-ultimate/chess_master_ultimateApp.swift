@@ -6,13 +6,24 @@
 //
 
 import PgnCore
+import Sparkle
 import SwiftData
 import SwiftUI
+
+var updaterController: SPUStandardUpdaterController?
+let updaterDelegate = UpdaterDelegate()
 
 @main
 struct chess_master_ultimateApp: App {
     @State private var pgnCore = PgnCore()
     @State private var chatModel = ChatModel()
+
+    init() {
+        updaterController = SPUStandardUpdaterController(
+            startingUpdater: true, updaterDelegate: updaterDelegate, userDriverDelegate: nil)
+        updaterController?.updater.updateCheckInterval = 80
+        updaterController?.updater.automaticallyChecksForUpdates = true
+    }
 
     var body: some Scene {
         WindowGroup {
