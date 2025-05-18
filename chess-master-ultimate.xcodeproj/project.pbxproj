@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DF2F33FC2DD7709E00D815A9 /* PgnCore in Frameworks */ = {isa = PBXBuildFile; productRef = DF2F33FB2DD7709E00D815A9 /* PgnCore */; };
+		DFCA3CBC2DDA41C60030F558 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = DFCA3CBB2DDA41C60030F558 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF2F33FC2DD7709E00D815A9 /* PgnCore in Frameworks */,
+				DFCA3CBC2DDA41C60030F558 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -131,6 +133,7 @@
 			name = "chess-master-ultimate";
 			packageProductDependencies = (
 				DF2F33FB2DD7709E00D815A9 /* PgnCore */,
+				DFCA3CBB2DDA41C60030F558 /* Sparkle */,
 			);
 			productName = "chess-master-ultimate";
 			productReference = DF2F33C72DD72DA300D815A9 /* chess-master-ultimate.app */;
@@ -217,6 +220,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				DF2F33FA2DD7709D00D815A9 /* XCLocalSwiftPackageReference "packages/PgnCore" */,
+				DFCA3CBA2DDA41C60030F558 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DF2F33C82DD72DA300D815A9 /* Products */;
@@ -425,7 +429,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "chess-master-ultimate/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Chess;
+				INFOPLIST_KEY_CFBundleDisplayName = Chessmate;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -460,7 +464,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "chess-master-ultimate/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Chess;
+				INFOPLIST_KEY_CFBundleDisplayName = Chessmate;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -596,10 +600,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		DFCA3CBA2DDA41C60030F558 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		DF2F33FB2DD7709E00D815A9 /* PgnCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PgnCore;
+		};
+		DFCA3CBB2DDA41C60030F558 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DFCA3CBA2DDA41C60030F558 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
