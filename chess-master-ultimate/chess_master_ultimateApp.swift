@@ -37,6 +37,11 @@ struct chess_master_ultimateApp: App {
         .commands {
             #if os(macOS)
             OpenFileCommand(pgnCore: pgnCore)
+            CommandGroup(after: .appInfo) {
+                Button("Check for Updates...") {
+                    updaterController?.checkForUpdates(nil)
+                }
+            }
             #endif
         }
 
