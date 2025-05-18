@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		DF2F33FC2DD7709E00D815A9 /* PgnCore in Frameworks */ = {isa = PBXBuildFile; productRef = DF2F33FB2DD7709E00D815A9 /* PgnCore */; };
+		DFCA3CBC2DDA41C60030F558 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = DFCA3CBB2DDA41C60030F558 /* Sparkle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -28,18 +29,18 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		DF2F33C72DD72DA300D815A9 /* chess-master-ultimate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "chess-master-ultimate.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF2F33D82DD72DA400D815A9 /* chess-master-ultimateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "chess-master-ultimateTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DF2F33E22DD72DA400D815A9 /* chess-master-ultimateUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "chess-master-ultimateUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF2F33C72DD72DA300D815A9 /* chessmate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = chessmate.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF2F33D82DD72DA400D815A9 /* chessmateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = chessmateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		DF2F33E22DD72DA400D815A9 /* chessmateUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = chessmateUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		DF2F341A2DD79F7100D815A9 /* Exceptions for "chess-master-ultimate" folder in "chess-master-ultimate" target */ = {
+		DF2F341A2DD79F7100D815A9 /* Exceptions for "chess-master-ultimate" folder in "chessmate" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = DF2F33C62DD72DA300D815A9 /* chess-master-ultimate */;
+			target = DF2F33C62DD72DA300D815A9 /* chessmate */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -47,7 +48,7 @@
 		DF2F33C92DD72DA300D815A9 /* chess-master-ultimate */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				DF2F341A2DD79F7100D815A9 /* Exceptions for "chess-master-ultimate" folder in "chess-master-ultimate" target */,
+				DF2F341A2DD79F7100D815A9 /* Exceptions for "chess-master-ultimate" folder in "chessmate" target */,
 			);
 			path = "chess-master-ultimate";
 			sourceTree = "<group>";
@@ -70,6 +71,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				DF2F33FC2DD7709E00D815A9 /* PgnCore in Frameworks */,
+				DFCA3CBC2DDA41C60030F558 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,9 +105,9 @@
 		DF2F33C82DD72DA300D815A9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DF2F33C72DD72DA300D815A9 /* chess-master-ultimate.app */,
-				DF2F33D82DD72DA400D815A9 /* chess-master-ultimateTests.xctest */,
-				DF2F33E22DD72DA400D815A9 /* chess-master-ultimateUITests.xctest */,
+				DF2F33C72DD72DA300D815A9 /* chessmate.app */,
+				DF2F33D82DD72DA400D815A9 /* chessmateTests.xctest */,
+				DF2F33E22DD72DA400D815A9 /* chessmateUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -113,9 +115,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		DF2F33C62DD72DA300D815A9 /* chess-master-ultimate */ = {
+		DF2F33C62DD72DA300D815A9 /* chessmate */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DF2F33EC2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chess-master-ultimate" */;
+			buildConfigurationList = DF2F33EC2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chessmate" */;
 			buildPhases = (
 				DF2F33C32DD72DA300D815A9 /* Sources */,
 				DF2F33C42DD72DA300D815A9 /* Frameworks */,
@@ -128,17 +130,18 @@
 			fileSystemSynchronizedGroups = (
 				DF2F33C92DD72DA300D815A9 /* chess-master-ultimate */,
 			);
-			name = "chess-master-ultimate";
+			name = chessmate;
 			packageProductDependencies = (
 				DF2F33FB2DD7709E00D815A9 /* PgnCore */,
+				DFCA3CBB2DDA41C60030F558 /* Sparkle */,
 			);
 			productName = "chess-master-ultimate";
-			productReference = DF2F33C72DD72DA300D815A9 /* chess-master-ultimate.app */;
+			productReference = DF2F33C72DD72DA300D815A9 /* chessmate.app */;
 			productType = "com.apple.product-type.application";
 		};
-		DF2F33D72DD72DA400D815A9 /* chess-master-ultimateTests */ = {
+		DF2F33D72DD72DA400D815A9 /* chessmateTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DF2F33EF2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chess-master-ultimateTests" */;
+			buildConfigurationList = DF2F33EF2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chessmateTests" */;
 			buildPhases = (
 				DF2F33D42DD72DA400D815A9 /* Sources */,
 				DF2F33D52DD72DA400D815A9 /* Frameworks */,
@@ -152,16 +155,16 @@
 			fileSystemSynchronizedGroups = (
 				DF2F33DB2DD72DA400D815A9 /* chess-master-ultimateTests */,
 			);
-			name = "chess-master-ultimateTests";
+			name = chessmateTests;
 			packageProductDependencies = (
 			);
 			productName = "chess-master-ultimateTests";
-			productReference = DF2F33D82DD72DA400D815A9 /* chess-master-ultimateTests.xctest */;
+			productReference = DF2F33D82DD72DA400D815A9 /* chessmateTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		DF2F33E12DD72DA400D815A9 /* chess-master-ultimateUITests */ = {
+		DF2F33E12DD72DA400D815A9 /* chessmateUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = DF2F33F22DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chess-master-ultimateUITests" */;
+			buildConfigurationList = DF2F33F22DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chessmateUITests" */;
 			buildPhases = (
 				DF2F33DE2DD72DA400D815A9 /* Sources */,
 				DF2F33DF2DD72DA400D815A9 /* Frameworks */,
@@ -175,11 +178,11 @@
 			fileSystemSynchronizedGroups = (
 				DF2F33E52DD72DA400D815A9 /* chess-master-ultimateUITests */,
 			);
-			name = "chess-master-ultimateUITests";
+			name = chessmateUITests;
 			packageProductDependencies = (
 			);
 			productName = "chess-master-ultimateUITests";
-			productReference = DF2F33E22DD72DA400D815A9 /* chess-master-ultimateUITests.xctest */;
+			productReference = DF2F33E22DD72DA400D815A9 /* chessmateUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -205,7 +208,7 @@
 					};
 				};
 			};
-			buildConfigurationList = DF2F33C22DD72DA300D815A9 /* Build configuration list for PBXProject "chess-master-ultimate" */;
+			buildConfigurationList = DF2F33C22DD72DA300D815A9 /* Build configuration list for PBXProject "chessmate" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -217,15 +220,16 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				DF2F33FA2DD7709D00D815A9 /* XCLocalSwiftPackageReference "packages/PgnCore" */,
+				DFCA3CBA2DDA41C60030F558 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = DF2F33C82DD72DA300D815A9 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				DF2F33C62DD72DA300D815A9 /* chess-master-ultimate */,
-				DF2F33D72DD72DA400D815A9 /* chess-master-ultimateTests */,
-				DF2F33E12DD72DA400D815A9 /* chess-master-ultimateUITests */,
+				DF2F33C62DD72DA300D815A9 /* chessmate */,
+				DF2F33D72DD72DA400D815A9 /* chessmateTests */,
+				DF2F33E12DD72DA400D815A9 /* chessmateUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -281,12 +285,12 @@
 /* Begin PBXTargetDependency section */
 		DF2F33DA2DD72DA400D815A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DF2F33C62DD72DA300D815A9 /* chess-master-ultimate */;
+			target = DF2F33C62DD72DA300D815A9 /* chessmate */;
 			targetProxy = DF2F33D92DD72DA400D815A9 /* PBXContainerItemProxy */;
 		};
 		DF2F33E42DD72DA400D815A9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = DF2F33C62DD72DA300D815A9 /* chess-master-ultimate */;
+			target = DF2F33C62DD72DA300D815A9 /* chessmate */;
 			targetProxy = DF2F33E32DD72DA400D815A9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -425,7 +429,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "chess-master-ultimate/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Chess;
+				INFOPLIST_KEY_CFBundleDisplayName = Chessmate;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -460,7 +464,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "chess-master-ultimate/Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = Chess;
+				INFOPLIST_KEY_CFBundleDisplayName = Chessmate;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.education";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
@@ -494,7 +498,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chess-master-ultimate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/chess-master-ultimate";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chessmate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/chessmate";
 			};
 			name = Debug;
 		};
@@ -512,7 +516,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 5.0;
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chess-master-ultimate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/chess-master-ultimate";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/chessmate.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/chessmate";
 			};
 			name = Release;
 		};
@@ -551,7 +555,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		DF2F33C22DD72DA300D815A9 /* Build configuration list for PBXProject "chess-master-ultimate" */ = {
+		DF2F33C22DD72DA300D815A9 /* Build configuration list for PBXProject "chessmate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DF2F33EA2DD72DA400D815A9 /* Debug */,
@@ -560,7 +564,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DF2F33EC2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chess-master-ultimate" */ = {
+		DF2F33EC2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chessmate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DF2F33ED2DD72DA400D815A9 /* Debug */,
@@ -569,7 +573,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DF2F33EF2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chess-master-ultimateTests" */ = {
+		DF2F33EF2DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chessmateTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DF2F33F02DD72DA400D815A9 /* Debug */,
@@ -578,7 +582,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		DF2F33F22DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chess-master-ultimateUITests" */ = {
+		DF2F33F22DD72DA400D815A9 /* Build configuration list for PBXNativeTarget "chessmateUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				DF2F33F32DD72DA400D815A9 /* Debug */,
@@ -596,10 +600,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		DFCA3CBA2DDA41C60030F558 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		DF2F33FB2DD7709E00D815A9 /* PgnCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PgnCore;
+		};
+		DFCA3CBB2DDA41C60030F558 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DFCA3CBA2DDA41C60030F558 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
