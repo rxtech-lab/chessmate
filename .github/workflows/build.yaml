@@ -80,8 +80,8 @@ jobs:
         if: github.event_name == 'pull_request'
         uses: actions/upload-artifact@v4
         with:
-          name: TradingAnalyzer-PR-${{ github.event.pull_request.number }}
-          path: TradingAnalyzer.dmg
+          name: ChessMate-PR-${{ github.event.pull_request.number }}
+          path: ChessMate.dmg
           retention-days: 1
 
       # Upload to release for release events
@@ -89,7 +89,7 @@ jobs:
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: TradingAnalyzer.dmg
+          files: ChessMate.dmg
           token: ${{ secrets.GITHUB_TOKEN }}
 
       # Upload appcast as an artifact for the deploy job
