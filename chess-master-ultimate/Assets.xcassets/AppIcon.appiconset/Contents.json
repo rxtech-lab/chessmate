@@ -1,6 +1,12 @@
 {
   "images" : [
     {
+      "filename" : "1024Wired Flat 1477 Chessboard Hover Pinch.png",
+      "idiom" : "universal",
+      "platform" : "ios",
+      "size" : "1024x1024"
+    },
+    {
       "filename" : "16x16-Wired Flat 1477 Chessboard Hover Pinch.png",
       "idiom" : "mac",
       "scale" : "1x",

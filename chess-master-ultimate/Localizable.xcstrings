@@ -108,6 +108,9 @@
         }
       }
     },
+    "No file selected" : {
+
+    },
     "No game loaded" : {
       "localizations" : {
         "zh-Hans" : {
@@ -137,6 +140,9 @@
           }
         }
       }
+    },
+    "Open File" : {
+
     },
     "Open PGN File" : {
       "localizations" : {

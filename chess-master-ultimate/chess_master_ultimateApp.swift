@@ -16,7 +16,7 @@ struct chess_master_ultimateApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ContentView(file: nil)
                 .environment(pgnCore)
                 .environment(chatModel)
                 .modelContainer(for: [
@@ -24,20 +24,24 @@ struct chess_master_ultimateApp: App {
                 ])
         }
         .commands {
+            #if os(macOS)
             OpenFileCommand(pgnCore: pgnCore)
+            #endif
         }
 
-        DocumentGroup(viewing: PgnFile.self) { _ in
-            ContentView()
+        DocumentGroup(viewing: PgnFile.self) { file in
+            ContentView(file: file.document)
                 .environment(pgnCore)
                 .environment(chatModel)
                 .modelContainer(for: [
                     Chat.self
                 ])
         }
-
+        .commandsRemoved()
+        #if os(macOS)
         Settings {
             SettingsViews()
         }
+        #endif
     }
 }

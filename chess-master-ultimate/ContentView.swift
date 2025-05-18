@@ -41,6 +41,9 @@ struct ContentView: View {
 
     @State private var chat: Chat? = nil
     @State private var game: Game? = nil
+    @State private var showingFileImporter = false
+
+    let file: PgnFile?
 
     var body: some View {
         NavigationSplitView(
@@ -59,12 +62,14 @@ struct ContentView: View {
                             gameState: self.pgnCore.gameState,
                             onSquareTap: { square in
                                 print("Tapped square: \(square)")
-                            }
+                            },
+                            autoSize: true
                         )
                         HStack {
                             Text("Move: \(self.pgnCore.gameState.currentMoveIndex)")
                         }
                     }
+                    .padding()
                     .frame(minWidth: 500)
                 }
             },
@@ -72,6 +77,11 @@ struct ContentView: View {
                 if let chat = chat {
                     ChatListView(chat: chat, gameState: pgnCore.gameState)
                         .frame(minWidth: 300)
+                } else {
+                    Text("No file selected")
+                    Button("Open File") {
+                        showingFileImporter = true
+                    }
                 }
             }
         )
@@ -81,6 +91,11 @@ struct ContentView: View {
         }
         .task {
             loadAI()
+            DispatchQueue.main.async {
+                if let file = file {
+                    pgnCore.load(from: file)
+                }
+            }
         }
         .onChange(of: openAIKey) { _, _ in
             loadAI()
@@ -92,6 +107,22 @@ struct ContentView: View {
             loadAI()
         }
         .navigationTitle(game?.summary ?? "Chess Game")
+        .fileImporter(isPresented: $showingFileImporter, allowedContentTypes: [.pgn], onCompletion: { result in
+            switch result {
+            case .success(let url):
+                let gotAccess = url.startAccessingSecurityScopedResource()
+                if !gotAccess {
+                    print("Failed to access file")
+                    return
+                }
+                DispatchQueue.main.async {
+                    _ = self.pgnCore.load(from: url)
+                    url.stopAccessingSecurityScopedResource()
+                }
+            case .failure(let error):
+                print("Error loading file: \(error.localizedDescription)")
+            }
+        })
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(
@@ -102,6 +133,7 @@ struct ContentView: View {
                         Label("First", systemImage: "chevron.left.2")
                     }
                 )
+                // shift left arrow
                 .disabled(!self.pgnCore.gameState.hasPreviousMove)
             }
             ToolbarItem(placement: .primaryAction) {
@@ -113,6 +145,7 @@ struct ContentView: View {
                         Label("Previous", systemImage: "chevron.left")
                     }
                 )
+                .keyboardShortcut(.leftArrow, modifiers: [])
                 .disabled(!self.pgnCore.gameState.hasPreviousMove)
             }
             ToolbarItem(placement: .primaryAction) {
@@ -124,6 +157,7 @@ struct ContentView: View {
                         Label("Next", systemImage: "chevron.right")
                     }
                 )
+                .keyboardShortcut(.rightArrow, modifiers: [])
                 .disabled(!self.pgnCore.gameState.hasNextMove)
             }
             ToolbarItem(placement: .primaryAction) {
@@ -139,7 +173,7 @@ struct ContentView: View {
             }
             ToolbarItem(placement: .primaryAction) {
                 Button {
-                    loadPGNFile()
+                    showingFileImporter = true
                 } label: {
                     // load
                     Label("Load", systemImage: "folder")
@@ -156,22 +190,6 @@ struct ContentView: View {
 }
 
 extension ContentView {
-    func loadPGNFile() {
-        // open ns Open panel
-        let panel = NSOpenPanel()
-        panel.canChooseFiles = true
-        panel.canChooseDirectories = false
-        panel.allowsMultipleSelection = false
-        panel.allowedContentTypes = [.pgn]
-
-        panel.begin { result in
-            if result == .OK {
-                guard let url = panel.url else { return }
-                _ = self.pgnCore.load(from: url)
-            }
-        }
-    }
-
     func loadChat(game: Game) {
         // fetch chat
         let id = game.id
@@ -188,5 +206,5 @@ extension ContentView {
 }
 
 #Preview {
-    ContentView()
+    ContentView(file: nil)
 }

@@ -14,14 +14,19 @@ public struct ChessBoardView: View {
     /// The currently selected square
     @State private var selectedSquare: String?
 
+    /// Whether the board should auto-size to available space
+    private let autoSize: Bool
+
     public init(
         config: ChessBoardConfig,
         gameState: GameState,
-        onSquareTap: @escaping (String) -> Void
+        onSquareTap: @escaping (String) -> Void,
+        autoSize: Bool = false
     ) {
         self.config = config
         self.gameState = gameState
         self.onSquareTap = onSquareTap
+        self.autoSize = autoSize
     }
 
     /// Gets the appropriate piece image for a given square
@@ -45,6 +50,25 @@ public struct ChessBoardView: View {
     }
 
     public var body: some View {
+        if autoSize {
+            GeometryReader { geometry in
+                let minDimension = min(geometry.size.width, geometry.size.height)
+                let squareSize = minDimension / 8
+
+                boardContent(squareSize: squareSize)
+                    .frame(width: squareSize * 8, height: squareSize * 8)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            }
+        } else {
+            boardContent(squareSize: config.squareSize)
+                .frame(
+                    width: config.squareSize * 8,
+                    height: config.squareSize * 8
+                )
+        }
+    }
+
+    private func boardContent(squareSize: CGFloat) -> some View {
         VStack(spacing: 0) {
             ForEach((0...7).reversed(), id: \.self) { rank in
                 HStack(spacing: 0) {
@@ -54,6 +78,7 @@ public struct ChessBoardView: View {
                             square: square,
                             isLight: (file + rank) % 2 == 0,
                             config: config,
+                            squareSize: squareSize,
                             isSelected: selectedSquare == square,
                             isSourceHighlighted: gameState.highlightedFromSquare == square,
                             isDestinationHighlighted: gameState.highlightedToSquare == square,
@@ -67,10 +92,6 @@ public struct ChessBoardView: View {
                 }
             }
         }
-        .frame(
-            width: config.squareSize * 8,
-            height: config.squareSize * 8
-        )
     }
 }
 
@@ -79,6 +100,7 @@ private struct SquareView: View {
     let square: String
     let isLight: Bool
     let config: ChessBoardConfig
+    let squareSize: CGFloat
     let isSelected: Bool
     let isSourceHighlighted: Bool
     let isDestinationHighlighted: Bool
@@ -114,7 +136,7 @@ private struct SquareView: View {
                 pieceImage
                     .resizable()
                     .scaledToFit()
-                    .padding(config.squareSize * 0.1)
+                    .padding(squareSize * 0.1)
             }
 
             // Square label (for debugging)
@@ -124,7 +146,7 @@ private struct SquareView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
                 .padding(2)
         }
-        .frame(width: config.squareSize, height: config.squareSize)
+        .frame(width: squareSize, height: squareSize)
         .onTapGesture(perform: onTap)
     }
 }

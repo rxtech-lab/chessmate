@@ -133,9 +133,9 @@ public final class PgnFile: FileDocument, @unchecked Sendable {
 
                     // Update the starting index for the next game
                     // If this was a match that ended with a new tag, we need to find the actual start of the next game
-                    if gameEndIndex < nsContent.length
-                        && nsContent.substring(with: NSRange(location: gameEndIndex - 1, length: 1))
-                            == "["
+                    if gameEndIndex < nsContent.length,
+                       nsContent.substring(with: NSRange(location: gameEndIndex - 1, length: 1))
+                       == "["
                     {
                         lastEndIndex = gameEndRange.location + gameEndRange.length - 1
                     } else {
@@ -178,7 +178,7 @@ public final class PgnFile: FileDocument, @unchecked Sendable {
                         rawContent: firstPart
                     ))
 
-                for i in 1..<parts.count {
+                for i in 1 ..< parts.count {
                     let gamePart = "[" + parts[i]
                     let (metadata, moves) = parsePgnContent(gamePart)
                     games.append(
@@ -221,13 +221,13 @@ public final class PgnFile: FileDocument, @unchecked Sendable {
             let trimmedLine = line.trimmingCharacters(in: .whitespaces)
             if trimmedLine.isEmpty {
                 // Empty line might indicate transition from metadata to move section
-                if !parsingMoves && !moveTextSection.isEmpty {
+                if !parsingMoves, !moveTextSection.isEmpty {
                     parsingMoves = true
                 }
                 continue
             }
 
-            if trimmedLine.hasPrefix("[") && trimmedLine.hasSuffix("]") {
+            if trimmedLine.hasPrefix("["), trimmedLine.hasSuffix("]") {
                 // Parse metadata tag
                 let tagContent = trimmedLine.dropFirst().dropLast()
                 let components = tagContent.split(separator: " ", maxSplits: 1)
@@ -280,7 +280,7 @@ public final class PgnFile: FileDocument, @unchecked Sendable {
                     if let whiteMove = currentWhiteMove {
                         let moveText =
                             "\(currentMoveNumber). \(whiteMove)"
-                            + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
+                                + (currentBlackMove != nil ? " \(currentBlackMove!)" : "")
 
                         let move = MoveData(
                             moveNumber: currentMoveNumber,

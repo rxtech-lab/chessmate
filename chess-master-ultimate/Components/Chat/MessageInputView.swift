@@ -47,14 +47,18 @@ struct MessageInputView: View {
                     Image(systemName: "mail.and.text.magnifyingglass")
                 }
                 .help("Explain this move")
-                .buttonStyle(.accessoryBar)
+                #if os(macOS)
+                    .buttonStyle(.accessoryBar)
+                #endif
 
                 Button {
                     showModelPicker.toggle()
                 } label: {
                     Text(currentModel.displayName)
                 }
+                #if os(macOS)
                 .buttonStyle(.accessoryBar)
+                #endif
                 .popover(isPresented: $showModelPicker) {
                     VStack(alignment: .leading, spacing: 5) {
                         ForEach(modelCases, id: \.self.rawValue) { model in

@@ -12,8 +12,9 @@ struct OpenFileCommand: Commands {
     @Bindable var pgnCore: PgnCore
 
     @CommandsBuilder var body: some Commands {
-        CommandGroup(replacing: .newItem) {
+        CommandGroup(after: .newItem) {
             Button("Open PGN File") {
+                #if os(macOS)
                 let openPanel = NSOpenPanel()
                 openPanel.allowedContentTypes = [.pgn]
                 openPanel.allowsMultipleSelection = false
@@ -23,10 +24,13 @@ struct OpenFileCommand: Commands {
                 openPanel.begin { result in
                     if result == .OK {
                         if let url = openPanel.url {
-                            _ = pgnCore.load(from: url)
+                            DispatchQueue.main.async {
+                                _ = pgnCore.load(from: url)
+                            }
                         }
                     }
                 }
+                #endif
             }
         }
     }
